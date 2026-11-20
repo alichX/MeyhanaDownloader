@@ -1,0 +1,39 @@
+{
+  "selected": "light",
+  "_comments": {
+    "background": "Основной фон всего окна",
+    "surface": "Фон верхней панели",
+    "card": "Фон карточек альбомов",
+    "primary": "Акцентный цвет (кнопка Скачать, активная вкладка)",
+    "on_primary": "Цвет текста/иконки на акцентной кнопке",
+    "text": "Основной текст",
+    "text_secondary": "Второстепенный текст",
+    "border": "Рамки и разделители",
+    "input_bg": "Фон поля ввода ссылки",
+    "shadow": "Цвет тени карточек"
+  },
+  "light": {
+    "background": "#FAFAFA",
+    "surface": "#FFFFFF",
+    "card": "#FFFFFF",
+    "primary": "#FF6B6B",
+    "on_primary": "#FFFFFF",
+    "text": "#1A1A1A",
+    "text_secondary": "#666666",
+    "border": "#E0E0E0",
+    "input_bg": "#F5F5F5",
+    "shadow": "#00000015"
+  },
+  "dark": {
+    "background": "#121212",
+    "surface": "#1E1E1E",
+    "card": "#2A2A2A",
+    "primary": "#FF6B6B",
+    "on_primary": "#FFFFFF",
+    "text": "#F0F0F0",
+    "text_secondary": "#AAAAAA",
+    "border": "#3A3A3A",
+    "input_bg": "#2A2A2A",
+    "shadow": "#00000040"
+  }
+}
