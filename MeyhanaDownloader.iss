@@ -1,5 +1,5 @@
 #define MyAppName "MeyhanaDownloader"
-#define MyAppVersion "0.1.0"
+#define MyAppVersion "0.2.0"
 #define MyAppPublisher "alichX"
 #define MyAppExeName "MeyhanaDownloader.exe"
 
@@ -12,7 +12,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 OutputDir=installer
-OutputBaseFilename=MeyhanaDownloader-Setup
+OutputBaseFilename=MeyhanaDownloader-Setup-0.2.0
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -22,7 +22,7 @@ Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "downloadffmpeg"; Description: "Скачать FFmpeg вместе с приложением"; Flags: unchecked
+Name: "downloadffmpeg"; Description: "Скачать FFmpeg вместе с приложением"
 Name: "desktopicon"; Description: "Создать ярлык на рабочем столе"
 
 [Files]
