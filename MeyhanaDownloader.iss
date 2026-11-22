@@ -1,5 +1,5 @@
 #define MyAppName "MeyhanaDownloader"
-#define MyAppVersion "0.2.0"
+#define MyAppVersion "0.2.1"
 #define MyAppPublisher "alichX"
 #define MyAppExeName "MeyhanaDownloader.exe"
 
@@ -12,7 +12,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 OutputDir=installer
-OutputBaseFilename=MeyhanaDownloader-Setup-0.2.0
+OutputBaseFilename=MeyhanaDownloader-Setup-0.2.1
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern

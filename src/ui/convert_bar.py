@@ -2,7 +2,7 @@ import os
 import asyncio
 import flet as ft
 
-from modules.downloader import get_video_info, download_video
+from modules.downloader import download_video, get_download_directory, get_video_info
 from .video_card import create_video_card
 
 
@@ -238,7 +238,9 @@ class ConvertTab:
                 self.format_switcher.selected[0],
             )
         except Exception as ex:
-            print(f"Ошибка: {ex}")
+            snack_bar = ft.SnackBar(content=ft.Text(f"Ошибка скачивания: {ex}"))
+            self.page.overlay.append(snack_bar)
+            snack_bar.open = True
         finally:
             self.convert_button.content = ft.Text("Скачать", size=16)
             self.download_progress.visible = False
@@ -246,13 +248,13 @@ class ConvertTab:
             self.page.update()
 
     def _open_downloads(self, e):
+        folder = str(get_download_directory())
         if os.name == "nt":
-            os.startfile("downloads")
+            os.startfile(folder)
         else:
             import subprocess
             import sys
 
-            folder = os.path.abspath("downloads")
             if sys.platform == "darwin":
                 subprocess.Popen(["open", folder])
             else:

@@ -8,6 +8,12 @@ import yt_dlp
 infoList = {}
 
 
+def get_download_directory() -> Path:
+    download_dir = Path.home() / "Downloads" / "MeyhanaDownloader"
+    download_dir.mkdir(parents=True, exist_ok=True)
+    return download_dir
+
+
 def find_ffmpeg():
     candidates = []
 
@@ -32,7 +38,7 @@ def find_ffmpeg():
 
 def config(format=None, ui_callback=None):
     ydl_opts = {
-        'outtmpl': os.path.join('downloads', '%(title)s.%(ext)s'),
+        'outtmpl': str(get_download_directory() / '%(title)s.%(ext)s'),
         'writethumbnail': True,
         'quiet': False,
         'verbose': True,
@@ -105,7 +111,7 @@ def download_video(format):
                 ydl.extract_info(url, download=True)
         except Exception as e:
             print(f"Ошибка при скачивании: {e}")
-            return
+            raise
     infoList.clear()
 
 
