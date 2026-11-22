@@ -21,20 +21,34 @@ class ConvertTab:
             max_lines=10,
             width=500,
             text_align=ft.TextAlign.CENTER,
-            on_blur=self._load_video_info,
+            on_submit=self._load_video_info,
+            shift_enter=True,
         )
 
-        self.info_count = ft.Text(margin=ft.Margin.only(top=15, left=6))
-
+        self.info_count = ft.Text("0", weight=ft.FontWeight.BOLD)
         self.info_progress = ft.Container(
-            margin=10,
             bgcolor=colors["card"],
+            padding=7,
             shadow=ft.BoxShadow(spread_radius=1, blur_radius=3, color=ft.Colors.GREY),
-            content=ft.ProgressRing(margin=7),
+            content=ft.ProgressRing(),
             width=30,
             height=30,
             border_radius=50,
             visible=False,
+        )
+        self.clearCardsBtn = ft.Button(
+            "Очистить",
+            height=35,
+            icon=ft.Icons.CLEAR_ALL_ROUNDED,
+            on_click=self._clear_all_cards,
+            disabled=True
+        )
+        self.tools = ft.Container(
+            margin=20,
+            content=ft.Row(
+                    controls=[self.info_progress, self.clearCardsBtn]
+            ),
+
         )
 
         self.download_progress = ft.ProgressRing(width=160, height=160, visible=False)
@@ -65,7 +79,20 @@ class ConvertTab:
 
         self.left_half_stack = ft.Stack(
             expand=10,
-            controls=[self.video_passport, self.info_progress],
+            controls=[
+                self.video_passport,
+                self.tools,
+                ft.Container(
+                    border_radius=50,
+                    shadow=ft.BoxShadow(spread_radius=2, blur_radius=10, color=colors["primary"]),
+                    alignment=ft.Alignment.CENTER,
+                    margin=ft.Margin.only(left=350, top=500),
+                    width=30,
+                    height=30,
+                    content=self.info_count
+                )
+
+            ],
         )
 
     def build(self) -> ft.Tabs:
@@ -75,14 +102,20 @@ class ConvertTab:
             content=ft.Column(
                 controls=[
                     ft.Container(
-                        content=ft.TabBar(
-                            indicator=ft.UnderlineTabIndicator(
-                                border_radius=70,
-                                border_side=ft.BorderSide(2, self.colors["border"]),
-                            ),
-                            tabs=[
-                                ft.Tab(label="Конвертировать"),
+                        content=ft.Row(
+                            controls=[
+                                ft.TabBar(
+                                    indicator_size=ft.TabBarIndicatorSize.TAB,
+                                    indicator=ft.UnderlineTabIndicator(
+                                        border_radius=70,
+                                        border_side=ft.BorderSide(2, self.colors["border"]),
+                                    ),
+                                    tabs=[
+                                        ft.Tab(label="Конвертировать"),
+                                    ],
+                                )
                             ],
+                            alignment=ft.MainAxisAlignment.END,
                         )
                     ),
                     ft.TabBarView(
@@ -119,7 +152,6 @@ class ConvertTab:
                                                         ),
                                                     ],
                                                 ),
-                                                self.info_count,
                                             ],
                                         ),
                                     ],
@@ -131,8 +163,21 @@ class ConvertTab:
             ),
         )
 
+    def _clear_all_cards(self, e):
+        if self.info_count.value == str(0):
+            return
+        self.clearCardsBtn.disabled = True
+
+        self.correctly_info.clear()
+        self.url_input.value = ""
+        self.video_passport.content = None
+        self.cards_list = None
+        self.info_count.value = "0"
+        self.page.update()
+
+
     async def _load_video_info(self, e):
-        self.convert_button.disabled = True
+        self.disable_widgets(True)
         self.info_progress.visible = True
         self.page.update()
         await asyncio.sleep(0)
@@ -141,13 +186,13 @@ class ConvertTab:
         format_ = self.format_switcher.selected[0]
 
         correctly_info = await get_video_info(urls, format_)
-        if not correctly_info:
+        if not e.control.value.strip() or not correctly_info:
             self.convert_button.disabled = False
             self.info_progress.visible = False
             self.page.update()
             return
-
         self.correctly_info = correctly_info
+
         self.cards_list = ft.ListView(expand=True, margin=ft.Margin.only(top=25))
 
         for key, info in correctly_info.items():
@@ -161,8 +206,9 @@ class ConvertTab:
 
         self.info_count.value = str(len(self.correctly_info))
         self.video_passport.content = self.cards_list
+        self.disable_widgets(False)
         self.info_progress.visible = False
-        self.convert_button.disabled = False
+        self.clearCardsBtn.disabled = False
         self.page.update()
 
     def _delete_card(self, key: str, card: ft.Container):
@@ -180,7 +226,7 @@ class ConvertTab:
         self.page.update()
 
     async def _download(self, e):
-        self.convert_button.disabled = True
+        self.disable_widgets(True)
         self.download_progress.visible = True
         self.convert_button.content = ft.Text("Скачивание...", size=16)
         self.page.update()
@@ -196,7 +242,7 @@ class ConvertTab:
         finally:
             self.convert_button.content = ft.Text("Скачать", size=16)
             self.download_progress.visible = False
-            self.convert_button.disabled = False
+            self.disable_widgets(False)
             self.page.update()
 
     def _open_downloads(self, e):
@@ -211,3 +257,8 @@ class ConvertTab:
                 subprocess.Popen(["open", folder])
             else:
                 subprocess.Popen(["xdg-open", folder])
+
+    def disable_widgets(self, disabled: bool):
+        self.convert_button.disabled = disabled
+        self.url_input.disabled = disabled
+        self.format_switcher.disabled = disabled
