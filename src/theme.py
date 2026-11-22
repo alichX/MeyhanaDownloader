@@ -1,9 +1,16 @@
 import json
+import sys
+from pathlib import Path
+
 import flet as ft
 
 
 def load_theme_data(path: str = "config/theme.json") -> dict:
-    with open(path, "r", encoding="utf-8") as f:
+    if getattr(sys, "frozen", False):
+        config_path = Path(sys._MEIPASS) / "config" / "theme.json"
+    else:
+        config_path = Path(path)
+    with open(config_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 

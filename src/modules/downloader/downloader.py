@@ -1,16 +1,45 @@
-import yt_dlp
 import os
+import shutil
+import sys
+from pathlib import Path
+
+import yt_dlp
 
 infoList = {}
 
+
+def find_ffmpeg():
+    candidates = []
+
+    if getattr(sys, "frozen", False):
+        candidates.append(Path(sys._MEIPASS) / "ffmpeg" / "bin")
+        candidates.append(Path(sys.executable).resolve().parent / "ffmpeg" / "bin")
+
+    candidates.extend([
+        Path(os.environ.get("LOCALAPPDATA", "")) / "MeyhanaDownloader" / "ffmpeg" / "bin",
+        Path(r"C:\ffmpeg\bin"),
+    ])
+
+    configured = shutil.which("ffmpeg")
+    if configured:
+        return str(Path(configured).parent)
+
+    for candidate in candidates:
+        if (candidate / "ffmpeg.exe").is_file():
+            return str(candidate)
+
+    return None
+
 def config(format=None, ui_callback=None):
     ydl_opts = {
-        'ffmpeg_location': r'C:\ffmpeg\bin',
         'outtmpl': os.path.join('downloads', '%(title)s.%(ext)s'),
         'writethumbnail': True,
         'quiet': False,
         'verbose': True,
     }
+    ffmpeg_location = find_ffmpeg()
+    if ffmpeg_location:
+        ydl_opts["ffmpeg_location"] = ffmpeg_location
 
     if format == "MP3":
         ydl_opts.update({
