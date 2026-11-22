@@ -3,10 +3,15 @@
 
 a = Analysis(
     ['src/main.py'],
-    pathex=[],
+    pathex=['src'],
     binaries=[],
-    datas=[],
-    hiddenimports=[],
+    datas=[
+        ('src/config', 'config'),
+    ],
+    hiddenimports=[
+        'mutagen',
+        'PIL',
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -22,7 +27,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='main',
+    name='MeyhanaDownloader',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
