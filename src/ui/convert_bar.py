@@ -36,6 +36,28 @@ class ConvertTab:
             border_radius=50,
             visible=False,
         )
+
+        self.cards_list = ft.ListView(expand=True, padding=10)
+        self.cards_list_wrapper = ft.ShaderMask(
+            expand=True,
+            margin=ft.Margin.only(top=5),
+            content=self.cards_list,
+            blend_mode=ft.BlendMode.DST_IN,
+            shader=ft.LinearGradient(
+                begin=ft.Alignment.TOP_CENTER,
+                end=ft.Alignment.BOTTOM_CENTER,
+                colors=[
+                    ft.Colors.TRANSPARENT,  # Верхний край прозрачный
+                    ft.Colors.BLACK,  # Середина непрозрачная
+                    ft.Colors.BLACK,  # Середина непрозрачная
+                    ft.Colors.TRANSPARENT,  # Нижний край прозрачный
+                ],
+                stops=[0.0, 0.05, 0.95, 1.0],  # Настройте проценты под свои нужды
+            ),
+        )
+        #self.format_selected = ft.Container(
+        #    content=ft.Text(self.format_switcher.value)
+        #)
         self.clearCardsBtn = ft.Button(
             "Очистить",
             height=35,
@@ -193,7 +215,7 @@ class ConvertTab:
             return
         self.correctly_info = correctly_info
 
-        self.cards_list = ft.ListView(expand=True, margin=ft.Margin.only(top=25))
+
 
         for key, info in correctly_info.items():
             card = create_video_card(
@@ -205,7 +227,7 @@ class ConvertTab:
             self.cards_list.controls.append(card)
 
         self.info_count.value = str(len(self.correctly_info))
-        self.video_passport.content = self.cards_list
+        self.video_passport.content = self.cards_list_wrapper
         self.disable_widgets(False)
         self.info_progress.visible = False
         self.clearCardsBtn.disabled = False
