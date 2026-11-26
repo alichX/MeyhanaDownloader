@@ -1,0 +1,13 @@
+{
+  "selected": "English",
+  "English": {
+    "download": "Download",
+    "convTab": "Сonvert",
+    "clearCard": "Clear"
+  },
+  "Русский": {
+    "download": "Скачать",
+    "convTab": "Конвертировать",
+    "clearCard": "Очистить"
+  }
+}

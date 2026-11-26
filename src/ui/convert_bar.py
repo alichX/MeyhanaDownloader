@@ -1,9 +1,13 @@
 import os
 import asyncio
+from cProfile import label
+
 import flet as ft
 
+from modules.notifications import app_notification, system_notification
 from modules.downloader import get_video_info, download_video
 from .video_card import create_video_card
+
 
 
 class ConvertTab:
@@ -73,7 +77,7 @@ class ConvertTab:
 
         )
 
-        self.download_progress = ft.ProgressRing(width=160, height=160, visible=False)
+        self.download_progress = ft.ProgressRing(width=160, height=160, visible=False, value=0)
 
         self.convert_button = ft.Button(
             on_click=self._download,
@@ -127,6 +131,8 @@ class ConvertTab:
                         content=ft.Row(
                             controls=[
                                 ft.TabBar(
+                                    splash_border_radius=ft.BorderRadius.only(top_left=30, top_right=30,
+                                                                              bottom_left=10, bottom_right=10),
                                     indicator_size=ft.TabBarIndicatorSize.TAB,
                                     indicator=ft.UnderlineTabIndicator(
                                         border_radius=70,
@@ -134,10 +140,11 @@ class ConvertTab:
                                     ),
                                     tabs=[
                                         ft.Tab(label="Конвертировать"),
+                                        ft.Tab(label="История")
                                     ],
                                 )
                             ],
-                            alignment=ft.MainAxisAlignment.END,
+                            alignment=ft.MainAxisAlignment.CENTER,
                         )
                     ),
                     ft.TabBarView(
@@ -179,6 +186,11 @@ class ConvertTab:
                                     ],
                                 ),
                             ),
+                            ft.Container(
+                               alignment=ft.Alignment.CENTER,
+                               content=ft.ListView(
+                               )
+                            )
                         ],
                     ),
                 ]
@@ -193,7 +205,7 @@ class ConvertTab:
         self.correctly_info.clear()
         self.url_input.value = ""
         self.video_passport.content = None
-        self.cards_list = None
+        self.cards_list.controls.clear()
         self.info_count.value = "0"
         self.page.update()
 
@@ -214,8 +226,6 @@ class ConvertTab:
             self.page.update()
             return
         self.correctly_info = correctly_info
-
-
 
         for key, info in correctly_info.items():
             card = create_video_card(
@@ -254,14 +264,23 @@ class ConvertTab:
         self.page.update()
         await asyncio.sleep(0)
 
+
+        loop = asyncio.get_running_loop()
+        async def update_ui(val):
+            self.download_progress.value = val
+            self.download_progress.update()
+        def emit(val):
+            asyncio.run_coroutine_threadsafe(update_ui(val), loop)
         try:
             await asyncio.to_thread(
                 download_video,
                 self.format_switcher.selected[0],
+                emit
             )
         except Exception as ex:
             print(f"Ошибка: {ex}")
         finally:
+            app_notification(self.page)
             self.convert_button.content = ft.Text("Скачать", size=16)
             self.download_progress.visible = False
             self.disable_widgets(False)

@@ -93,16 +93,19 @@ async def get_video_info(urls: list, format):
         except Exception as e:
             print(f"Ошибка при получении инфо: {e}")
             pass
-    print(infoList)
+    print(len(infoList))
 
     return infoList
 
 
-def download_video(format):
+def download_video(format, emit):
+    barCount = [0, len(infoList)]
     for url in list(infoList.keys()):
         try:
+            barCount[0] += 1
             with yt_dlp.YoutubeDL(config(format)) as ydl:
                 ydl.extract_info(url, download=True)
+            emit(barCount[0]/barCount[1])
         except Exception as e:
             print(f"Ошибка при скачивании: {e}")
             return
