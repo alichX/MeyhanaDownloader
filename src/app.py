@@ -1,7 +1,7 @@
 import flet as ft
 
 from theme import load_theme_data, apply_theme
-from ui import create_title_bar, ConvertTab
+from ui import create_title_bar, MainTabs, ConvertTab, HistoryTab
 
 
 class App:
@@ -14,7 +14,7 @@ class App:
         self.theme_selected, self.colors = apply_theme(page, self.theme_data)
 
         self.title_bar = create_title_bar(page)
-        self.convert_tab = ConvertTab(page, self.colors, self.theme_selected)
+        self.main_tabs = MainTabs(page, self.colors, self.theme_selected)
 
         page.add(
             ft.SafeArea(
@@ -22,7 +22,7 @@ class App:
                 content=ft.Column(
                     controls=[
                         self.title_bar,
-                        self.convert_tab.build(),
+                        self.main_tabs.build(),
                     ],
                     expand=True,
                 ),

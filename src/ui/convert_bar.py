@@ -121,79 +121,42 @@ class ConvertTab:
             ],
         )
 
-    def build(self) -> ft.Tabs:
-        return ft.Tabs(
-            length=2,
-            expand=True,
-            content=ft.Column(
+    def build(self) -> ft.Container:
+        # Возвращаем только контент, без TabBar!
+        return ft.Container(
+            alignment=ft.Alignment.CENTER,
+            content=ft.Row(
+                alignment=ft.MainAxisAlignment.CENTER,
                 controls=[
-                    ft.Container(
-                        content=ft.Row(
-                            controls=[
-                                ft.TabBar(
-                                    splash_border_radius=ft.BorderRadius.only(top_left=30, top_right=30,
-                                                                              bottom_left=10, bottom_right=10),
-                                    indicator_size=ft.TabBarIndicatorSize.TAB,
-                                    indicator=ft.UnderlineTabIndicator(
-                                        border_radius=70,
-                                        border_side=ft.BorderSide(2, self.colors["border"]),
-                                    ),
-                                    tabs=[
-                                        ft.Tab(label="Конвертировать"),
-                                        ft.Tab(label="История")
-                                    ],
-                                )
-                            ],
-                            alignment=ft.MainAxisAlignment.CENTER,
-                        )
-                    ),
-                    ft.TabBarView(
-                        expand=True,
+                    self.left_half_stack,
+                    ft.Stack(
+                        expand=8,
                         controls=[
-                            ft.Container(
-                                alignment=ft.Alignment.CENTER,
-                                content=ft.Row(
-                                    alignment=ft.MainAxisAlignment.CENTER,
-                                    controls=[
-                                        self.left_half_stack,
-                                        ft.Stack(
-                                            expand=8,
-                                            controls=[
-                                                ft.Column(
-                                                    alignment=ft.CrossAxisAlignment.CENTER,
-                                                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                                                    controls=[
-                                                        self.url_input,
-                                                        ft.Stack(
-                                                            alignment=ft.Alignment.CENTER,
-                                                            controls=[
-                                                                self.download_progress,
-                                                                self.convert_button,
-                                                            ],
-                                                        ),
-                                                        self.format_switcher,
-                                                        ft.Container(
-                                                            alignment=ft.Alignment.BOTTOM_RIGHT,
-                                                            content=ft.IconButton(
-                                                                icon=ft.Icons.FOLDER_ROUNDED,
-                                                                on_click=self._open_downloads,
-                                                            ),
-                                                        ),
-                                                    ],
-                                                ),
-                                            ],
+                            ft.Column(
+                                alignment=ft.CrossAxisAlignment.CENTER,
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                controls=[
+                                    self.url_input,
+                                    ft.Stack(
+                                        alignment=ft.Alignment.CENTER,
+                                        controls=[
+                                            self.download_progress,
+                                            self.convert_button,
+                                        ],
+                                    ),
+                                    self.format_switcher,
+                                    ft.Container(
+                                        alignment=ft.Alignment.BOTTOM_RIGHT,
+                                        content=ft.IconButton(
+                                            icon=ft.Icons.FOLDER_ROUNDED,
+                                            on_click=self._open_downloads,
                                         ),
-                                    ],
-                                ),
+                                    ),
+                                ],
                             ),
-                            ft.Container(
-                               alignment=ft.Alignment.CENTER,
-                               content=ft.ListView(
-                               )
-                            )
                         ],
                     ),
-                ]
+                ],
             ),
         )
 
